@@ -10,7 +10,7 @@ use log::debug;
 use std::borrow::Cow;
 use std::io::{self, Write};
 
-pub const MAX_LINE_LENGTH: usize = 120;
+pub const MAX_LINE_LENGTH: usize = 80;
 
 pub struct RenderQueueWriter<'src> {
     tokens: Vec<ConcreteLineTokenAndTargets<'src>>,
@@ -58,7 +58,7 @@ impl<'src> RenderQueueWriter<'src> {
                             ))
                         );
                     if !is_ending_heredoc_token {
-                        next_token = clats_indent(depth + (accum.additional_indent * 2))
+                        next_token = clats_indent(depth + accum.additional_indent)
                     }
                 }
                 ConcreteLineTokenAndTargets::ConcreteLineToken(ConcreteLineToken::Comment {
@@ -67,7 +67,7 @@ impl<'src> RenderQueueWriter<'src> {
                     if !contents.is_empty() {
                         let new_contents = format!(
                             "{}{}",
-                            get_indent(accum.additional_indent as usize * 2),
+                            get_indent(accum.additional_indent as usize),
                             contents
                         );
                         next_token = ConcreteLineTokenAndTargets::ConcreteLineToken(
@@ -84,7 +84,7 @@ impl<'src> RenderQueueWriter<'src> {
                         .map(|k| k.is_squiggly())
                         .unwrap_or(false)
                     {
-                        let indent = get_indent(accum.additional_indent as usize * 2);
+                        let indent = get_indent(accum.additional_indent as usize);
                         let new_contents = part
                             .split('\n')
                             .map(|p| {
@@ -109,7 +109,7 @@ impl<'src> RenderQueueWriter<'src> {
                     if current_heredoc_kind.map(|k| !k.is_bare()).unwrap_or(false) {
                         let new_contents: String = format!(
                             "{}{}",
-                            get_indent(accum.additional_indent as usize * 2),
+                            get_indent(accum.additional_indent as usize),
                             symbol
                         );
                         next_token = clats_heredoc_close(new_contents);

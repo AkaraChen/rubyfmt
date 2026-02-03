@@ -4,16 +4,16 @@ use ruby_prism::{ConstantId, Location};
 
 /// Maximum indent depth we cache without allocation.
 const MAX_CACHED_INDENT: usize = 128;
-/// A pre-allocated string of spaces for efficient indentation
-const SPACES: &str = unsafe { std::str::from_utf8_unchecked(&[b' '; MAX_CACHED_INDENT]) };
+/// A pre-allocated string of tabs for efficient indentation
+const TABS: &str = unsafe { std::str::from_utf8_unchecked(&[b'\t'; MAX_CACHED_INDENT]) };
 
-/// Returns a string of `depth` spaces. For common indent depths (<= 128),
+/// Returns a string of `depth` tabs. For common indent depths (<= 128),
 /// this returns a static slice and only allocates for huge indents.
 pub fn get_indent(depth: usize) -> Cow<'static, str> {
     if depth <= MAX_CACHED_INDENT {
-        Cow::Borrowed(&SPACES[..depth])
+        Cow::Borrowed(&TABS[..depth])
     } else {
-        Cow::Owned(" ".repeat(depth))
+        Cow::Owned("\t".repeat(depth))
     }
 }
 

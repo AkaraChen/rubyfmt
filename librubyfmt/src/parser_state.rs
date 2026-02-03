@@ -807,7 +807,7 @@ impl<'src> ParserState<'src> {
     }
 
     pub(crate) fn current_spaces(&self) -> ColNumber {
-        2 * self.indent_depth.get()
+        self.indent_depth.get()
     }
 
     pub(crate) fn disable_user_newlines(&mut self) {
