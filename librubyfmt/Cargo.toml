@@ -13,7 +13,7 @@ memchr = "2.7"
 simplelog = "0.12"
 ruby-prism="1.9.0"
 
-[target.'cfg(not(target_env = "msvc"))'.dependencies]
+[target.'cfg(not(target_os = "windows"))'.dependencies]
 tikv-jemallocator = { version = "0.6.1", features = ["disable_initial_exec_tls"], optional=true }
 
 [lib]
