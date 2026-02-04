@@ -21,5 +21,5 @@ name = "rubyfmt"
 crate-type = ["staticlib", "rlib"]
 
 [features]
-default = ["use_jemalloc"]
+default = []
 use_jemalloc = ["tikv-jemallocator"]
