@@ -5,30 +5,31 @@ use ruby_prism::{ConstantId, Location};
 /// Maximum indent depth we cache without allocation.
 const MAX_CACHED_INDENT: usize = 128;
 /// A pre-allocated string of tabs for efficient indentation
-const TABS: &str = unsafe { std::str::from_utf8_unchecked(&[b'\t'; MAX_CACHED_INDENT]) };
+const TABS: &str =
+	unsafe { std::str::from_utf8_unchecked(&[b'\t'; MAX_CACHED_INDENT]) };
 
 /// Returns a string of `depth` tabs. For common indent depths (<= 128),
 /// this returns a static slice and only allocates for huge indents.
 pub fn get_indent(depth: usize) -> Cow<'static, str> {
-    if depth <= MAX_CACHED_INDENT {
-        Cow::Borrowed(&TABS[..depth])
-    } else {
-        Cow::Owned("\t".repeat(depth))
-    }
+	if depth <= MAX_CACHED_INDENT {
+		Cow::Borrowed(&TABS[..depth])
+	} else {
+		Cow::Owned("\t".repeat(depth))
+	}
 }
 
 pub fn u8_to_str(arr: &[u8]) -> &str {
-    std::str::from_utf8(arr).unwrap()
+	std::str::from_utf8(arr).unwrap()
 }
 
 pub fn u8_to_string(arr: &[u8]) -> String {
-    u8_to_str(arr).to_string()
+	u8_to_str(arr).to_string()
 }
 
 pub fn const_to_str(constant_id: ConstantId<'_>) -> &str {
-    u8_to_str(constant_id.as_slice())
+	u8_to_str(constant_id.as_slice())
 }
 
 pub fn loc_to_str(loc: Location<'_>) -> &str {
-    u8_to_str(loc.as_slice())
+	u8_to_str(loc.as_slice())
 }
