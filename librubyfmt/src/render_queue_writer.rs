@@ -71,43 +71,43 @@ impl<'src> RenderQueueWriter<'src> {
 				}
 				ConcreteLineTokenAndTargets::ConcreteLineToken(
 					ConcreteLineToken::Comment { contents },
-				) => {
-					if !contents.is_empty() {
-						let new_contents = format!(
-							"{}{}",
-							get_indent(accum.additional_indent as usize),
-							contents
-						);
-						next_token =
-							ConcreteLineTokenAndTargets::ConcreteLineToken(
-								ConcreteLineToken::Comment {
-									contents: new_contents,
-								},
-							)
-					}
+				) if !contents.is_empty() => {
+					let new_contents = format!(
+						"{}{}",
+						get_indent(accum.additional_indent as usize),
+						contents
+					);
+					next_token = ConcreteLineTokenAndTargets::ConcreteLineToken(
+						ConcreteLineToken::Comment {
+							contents: new_contents,
+						},
+					)
 				}
 				ConcreteLineTokenAndTargets::ConcreteLineToken(
+					ConcreteLineToken::Comment { .. },
+				) => {}
+				ConcreteLineTokenAndTargets::ConcreteLineToken(
 					ConcreteLineToken::DirectPart { part },
-				) => {
-					if current_heredoc_kind
-						.map(|k| k.is_squiggly())
-						.unwrap_or(false)
-					{
-						let indent =
-							get_indent(accum.additional_indent as usize);
-						let new_contents = part
-							.split('\n')
-							.map(|p| {
-								if p.is_empty() {
-									return p.into();
-								}
-								format!("{}{}", indent, p).into()
-							})
-							.collect::<Vec<Cow<'_, str>>>()
-							.join("\n");
-						next_token = clats_direct_part(new_contents)
-					}
+				) if current_heredoc_kind
+					.map(|k| k.is_squiggly())
+					.unwrap_or(false) =>
+				{
+					let indent = get_indent(accum.additional_indent as usize);
+					let new_contents = part
+						.split('\n')
+						.map(|p| {
+							if p.is_empty() {
+								return p.into();
+							}
+							format!("{}{}", indent, p).into()
+						})
+						.collect::<Vec<Cow<'_, str>>>()
+						.join("\n");
+					next_token = clats_direct_part(new_contents)
 				}
+				ConcreteLineTokenAndTargets::ConcreteLineToken(
+					ConcreteLineToken::DirectPart { .. },
+				) => {}
 				ConcreteLineTokenAndTargets::ConcreteLineToken(
 					ConcreteLineToken::HeredocStart { kind, .. },
 				) => current_heredoc_kind = Some(*kind),

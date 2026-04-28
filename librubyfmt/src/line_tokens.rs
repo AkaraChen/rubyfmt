@@ -210,13 +210,10 @@ impl<'src> ConcreteLineToken<'src> {
 	pub fn is_newline(&self) -> bool {
 		match self {
 			Self::HardNewLine => true,
-			Self::DirectPart { part } => {
-				if *part == "\n" {
-					panic!("shouldn't ever have a single newline direct part");
-				} else {
-					false
-				}
+			Self::DirectPart { part } if *part == "\n" => {
+				panic!("shouldn't ever have a single newline direct part");
 			}
+			Self::DirectPart { .. } => false,
 			_ => false,
 		}
 	}
